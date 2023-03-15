@@ -5,9 +5,11 @@ using UnityEngine;
 public class DragBlockSpawner : MonoBehaviour
 {
     [SerializeField]
-    private Transform[]         blockSpawnPoints;
+    private Transform[]     blockSpawnPoints;
     [SerializeField]
-    private GameObject[]        blockPrefabs;
+    private GameObject[]    blockPrefabs;
+    [SerializeField]
+    private Vector3         spawnGapAmount = new Vector3(10, 0, 0);
 
     private void Awake() {
         StartCoroutine("OnSpawnBlocks");
@@ -20,7 +22,12 @@ public class DragBlockSpawner : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
             int index = Random.Range(0, blockPrefabs.Length);
-            Instantiate(blockPrefabs[index], blockSpawnPoints[i].position, Quaternion.identity, blockSpawnPoints[i]);
+
+            Vector3 spawnPosition = blockSpawnPoints[i].position + spawnGapAmount;
+
+            GameObject clone = Instantiate(blockPrefabs[index], spawnPosition, Quaternion.identity, blockSpawnPoints[i]);
+
+            clone.GetComponent<DragBlock>().Setup(blockSpawnPoints[i].position);
         }
     }
 }
