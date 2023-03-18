@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 83341822}
   - component: {fileID: 83341821}
   m_Layer: 0
-  m_Name: ForGroundBlockSpawner
+  m_Name: ForeGroundBlockSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -330,6 +330,67 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1003232096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1003232098}
+  - component: {fileID: 1003232097}
+  - component: {fileID: 1003232099}
+  m_Layer: 0
+  m_Name: StageController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1003232097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003232096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1497c3ce6b3944deea02ba2e1d51aec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backGroundBlockSpawner: {fileID: 966095184}
+  foreGroundBlockSpawner: {fileID: 83341821}
+  dragBlockSpawner: {fileID: 1254456779}
+  blockArrangeSystem: {fileID: 1003232099}
+--- !u!4 &1003232098
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003232096}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1003232099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003232096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8d23c35543094323b4e3b6b376dbca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1254456778
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 384fc4050ec544f5095ab8b300741b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blockArrangeSystem: {fileID: 1003232099}
   blockSpawnPoints:
   - {fileID: 727584083}
   - {fileID: 2091431206}
@@ -383,6 +445,7 @@ MonoBehaviour:
   - {fileID: 1373152842958050940, guid: 3e4a88bb94d09b741a43289d60b98749, type: 3}
   - {fileID: 1438324261588746372, guid: 6579280985002144eb1171a67af3a767, type: 3}
   - {fileID: 6820251835095410477, guid: 592c27abec3948143b48688d743e4ef3, type: 3}
+  spawnGapAmount: {x: 10, y: 0, z: 0}
 --- !u!4 &1254456780
 Transform:
   m_ObjectHideFlags: 0

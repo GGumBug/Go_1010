@@ -11,22 +11,29 @@ public class BackGroundBlockSpawner : MonoBehaviour
     private int         orderInLayer;
 
     //격자형태로 생성되는 블록의 개수, 블록 하나의 절반 크기
-    private Vector2Int  blockCount = new Vector2Int(10, 10);
-    private Vector2     blockHalf = new Vector2(0.5f, 0.5f);
+    // private Vector2Int  blockCount = new Vector2Int(10, 10);
+    // private Vector2     blockHalf = new Vector2(0.5f, 0.5f);
 
-    private void Awake() {
-        for (int i = 0; i < blockCount.y; ++ i)
+    public BackGroundBlock[] SpawnBlocks(Vector2Int blockCount, Vector2 blockHalf) {
+
+        BackGroundBlock[] blocks = new BackGroundBlock[blockCount.x * blockCount.y];
+
+        for (int y = 0; y < blockCount.y; ++ y)
         {
-            for (int e = 0; e < blockCount.x; ++ e)
+            for (int x = 0; x < blockCount.x; ++ x)
             {
-                float   px      = -blockCount.x * 0.5f + blockHalf.x + e;
-                float   py      = blockCount.y * 0.5f - blockHalf.y - i;
+                float   px      = -blockCount.x * 0.5f + blockHalf.x + x;
+                float   py      = blockCount.y * 0.5f - blockHalf.y - y;
                 Vector3 position = new Vector3(px,py,0);
 
                 GameObject clone = Instantiate(blockPrefab, position, Quaternion.identity, transform);
 
                 clone.GetComponent<SpriteRenderer>().sortingOrder = orderInLayer;
+
+                blocks[y * blockCount.x + x] = clone.GetComponent<BackGroundBlock>();
             }
         }
+
+        return blocks;
     }
 }

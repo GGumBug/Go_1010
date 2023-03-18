@@ -9,14 +9,30 @@ public class DragBlock : MonoBehaviour
     [SerializeField]
     private AnimationCurve  curveScale;
 
+    private BlockArrangeSystem blockArrangeSystem;
+
     private float           appearTime = 0.5f;
     private float           returnTime = 0.1f;
 
     [field:SerializeField] //프로퍼티를 인스펙터창에서 제어 할 경우 field를 붙인다.
-    public Vector2Int       blockCount {private set; get;}
+    public Vector2Int       blockCount  {private set; get;}
 
-    public void Setup(Vector3 parentPosition)
+    public Color            color       {private set; get;}
+    public Vector3[]        childBolck  {private set; get;}
+
+    public void Setup(BlockArrangeSystem blockArrangeSystem, Vector3 parentPosition)
     {
+        this.blockArrangeSystem = blockArrangeSystem;
+
+        color = GetComponentInChildren<SpriteRenderer>().color;
+
+        //transform.childCount 자식객체의 개수를 불러올수 있다.
+        childBolck = new Vector3[transform.childCount];
+        for (int i = 0; i < childBolck.Length; i++)
+        {
+            childBolck[i] = transform.GetChild(i).localPosition;
+        }
+
         StartCoroutine(OnMoveTo(parentPosition, appearTime));
     }
 
@@ -36,9 +52,25 @@ public class DragBlock : MonoBehaviour
     }
 
     private void OnMouseUp() {
-        StopCoroutine("OnScaleTo");
-        StartCoroutine("OnScaleTo", Vector3.one * 0.5f);
-        StartCoroutine(OnMoveTo(transform.parent.position, returnTime));
+        //RoundToInt는 반올림을 한다는 표시
+        float x = Mathf.RoundToInt(transform.position.x - blockCount.x%2*0.5f)+blockCount.x%2*0.5f;
+        float y = Mathf.RoundToInt(transform.position.y - blockCount.y%2*0.5f)+blockCount.y%2*0.5f;
+
+        transform.position = new Vector3(x,y,0);
+
+        bool isSuccess = blockArrangeSystem.TryArrangementBlock(this);
+
+        // 현재 위치에 블록을 배치할 수 있는지 검사하고 결과를 반환
+        if (isSuccess == false)
+        {
+            StopCoroutine("OnScaleTo");
+            StartCoroutine("OnScaleTo", Vector3.one * 0.5f);
+            StartCoroutine(OnMoveTo(transform.parent.position, returnTime));
+        }
+
+        // StopCoroutine("OnScaleTo");
+        // StartCoroutine("OnScaleTo", Vector3.one * 0.5f);
+        // StartCoroutine(OnMoveTo(transform.parent.position, returnTime));
     }
 
     private IEnumerator OnMoveTo(Vector3 end, float time)
