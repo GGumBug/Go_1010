@@ -12,6 +12,11 @@ public class StageController : MonoBehaviour
     private DragBlockSpawner        dragBlockSpawner;
     [SerializeField]
     private BlockArrangeSystem      blockArrangeSystem;
+    [SerializeField]
+    private UIController            uIController;
+
+    public int                      CurrentScore { private set; get; }
+    public int                      HighScore { private set; get; }
 
     private BackGroundBlock[]       backGroundBlocks;
     private int                     currentDragBlockCount;
@@ -23,6 +28,10 @@ public class StageController : MonoBehaviour
     private List<BackGroundBlock>   filledBlockList;
 
     private void Awake() {
+
+        CurrentScore = 0;
+        HighScore = PlayerPrefs.GetInt("HighScore");
+
         filledBlockList = new List<BackGroundBlock>();
 
         backGroundBlockSpawner.SpawnBlocks(blockCount, blockHalf);
@@ -32,13 +41,33 @@ public class StageController : MonoBehaviour
 
         blockArrangeSystem.Setup(blockCount, blockHalf, backGroundBlocks, this);
 
-        SpawnDragBlocks();
+        StartCoroutine(SpawnDragBlocks());
     }
 
-    private void SpawnDragBlocks()
+    private IEnumerator SpawnDragBlocks()
     {
         currentDragBlockCount = maxDragBlockCount;
+
         dragBlockSpawner.SpawnBlocks();
+
+        // WaitUntil은 불값이 참이 될때까지 기다렸다가 실행
+        yield return new WaitUntil(() => IsCompleteSpawnBlocks());
+    }
+
+    private bool IsCompleteSpawnBlocks()
+    {
+        int count = 0;
+        for (int i = 0; i < dragBlockSpawner.BlockSpawnPoints.Length; i++)
+        {
+            if (dragBlockSpawner.BlockSpawnPoints[i].childCount != 0 &&
+                dragBlockSpawner.BlockSpawnPoints[i].GetChild(0).localPosition == Vector3.zero)
+            {
+                count++;
+            }
+        }
+
+        // 이 코드가 참인지 불인지 판단해서 리턴하는것도 가능
+        return count == dragBlockSpawner.BlockSpawnPoints.Length;
     }
 
     public void AfterBlockArrangment(DragBlock block)
@@ -52,13 +81,33 @@ public class StageController : MonoBehaviour
 
         int filledLineCount = CheckFilledLine();
 
+        // Pow (x, y) x의 y 승
+        int lineScore = filledLineCount == 0 ? 0 : (int)Mathf.Pow(2, filledLineCount - 1) * 10;
+
+        CurrentScore += block.childBolcks.Length + lineScore;
+
         yield return StartCoroutine(DestroyFilledBlocks(block));
 
         currentDragBlockCount--;
 
         if (currentDragBlockCount == 0)
         {
-            SpawnDragBlocks();
+            yield return StartCoroutine(SpawnDragBlocks());
+        }
+
+        //Destroy는 프레임의 마지막에 실행되기 때문에 작업이 끝난 후 실행을 체크하기 위해 사용
+        yield return new WaitForEndOfFrame();
+
+        if (IsGameOver())
+        {
+            //Debug.Log("GameOver");
+
+            if (CurrentScore > HighScore)
+            {
+                PlayerPrefs.SetInt("HighScore", CurrentScore);
+            }
+
+            uIController.GameOver();
         }
     }
 
@@ -121,5 +170,25 @@ public class StageController : MonoBehaviour
         }
 
         filledBlockList.Clear();
+    }
+
+    private bool IsGameOver()
+    {
+        int dragBlockCount = 0;
+
+        for (int i = 0; i < dragBlockSpawner.BlockSpawnPoints.Length; i++)
+        {
+            if (dragBlockSpawner.BlockSpawnPoints[i].childCount != 0)
+            {
+                dragBlockCount++;
+                if (blockArrangeSystem.IsPossibleArrangment(
+                    dragBlockSpawner.BlockSpawnPoints[i].GetComponentInChildren<DragBlock>()))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return dragBlockCount != 0;
     }
 }

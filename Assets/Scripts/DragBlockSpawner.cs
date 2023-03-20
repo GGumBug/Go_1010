@@ -5,13 +5,15 @@ using UnityEngine;
 public class DragBlockSpawner : MonoBehaviour
 {
     [SerializeField]
-    private BlockArrangeSystem blockArrangeSystem;
+    private BlockArrangeSystem  blockArrangeSystem;
     [SerializeField]
-    private Transform[]     blockSpawnPoints;
+    private Transform[]         blockSpawnPoints;
     [SerializeField]
-    private GameObject[]    blockPrefabs;
+    private GameObject[]        blockPrefabs;
     [SerializeField]
-    private Vector3         spawnGapAmount = new Vector3(10, 0, 0);
+    private Vector3             spawnGapAmount = new Vector3(10, 0, 0);
+
+    public Transform[]          BlockSpawnPoints => blockSpawnPoints;
 
     public void SpawnBlocks() {
         StartCoroutine("OnSpawnBlocks");

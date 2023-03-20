@@ -18,7 +18,7 @@ public class DragBlock : MonoBehaviour
     public Vector2Int       blockCount  {private set; get;}
 
     public Color            color       {private set; get;}
-    public Vector3[]        childBolck  {private set; get;}
+    public Vector3[]        childBolcks  {private set; get;}
 
     public void Setup(BlockArrangeSystem blockArrangeSystem, Vector3 parentPosition)
     {
@@ -27,10 +27,10 @@ public class DragBlock : MonoBehaviour
         color = GetComponentInChildren<SpriteRenderer>().color;
 
         //transform.childCount 자식객체의 개수를 불러올수 있다.
-        childBolck = new Vector3[transform.childCount];
-        for (int i = 0; i < childBolck.Length; i++)
+        childBolcks = new Vector3[transform.childCount];
+        for (int i = 0; i < childBolcks.Length; i++)
         {
-            childBolck[i] = transform.GetChild(i).localPosition;
+            childBolcks[i] = transform.GetChild(i).localPosition;
         }
 
         StartCoroutine(OnMoveTo(parentPosition, appearTime));

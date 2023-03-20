@@ -20,10 +20,10 @@ public class BlockArrangeSystem : MonoBehaviour
 
     public bool TryArrangementBlock(DragBlock block)
     {
-        for (int i = 0; i < block.childBolck.Length; i++)
+        for (int i = 0; i < block.childBolcks.Length; i++)
         {
             //현재 블록의 위치에 자식 블록 localposition을 더해준 값
-            Vector3 position = block.transform.position + block.childBolck[i];
+            Vector3 position = block.transform.position + block.childBolcks[i];
 
             //블록이 맵 내부에 위치하는지
             if (!IsBlockInsideMap(position))        return false;
@@ -31,9 +31,9 @@ public class BlockArrangeSystem : MonoBehaviour
             if (!IsOtherBlockInThisBlock(position)) return false;
         }
 
-        for (int i = 0; i < block.childBolck.Length; i++)
+        for (int i = 0; i < block.childBolcks.Length; i++)
         {
-            Vector3 position = block.transform.position + block.childBolck[i];
+            Vector3 position = block.transform.position + block.childBolcks[i];
 
             backGroundBlocks[PositionToIndex(position)].FillBlock(block.color);
         }
@@ -72,5 +72,38 @@ public class BlockArrangeSystem : MonoBehaviour
         }
 
         return true;
+    }
+
+    public bool IsPossibleArrangment(DragBlock block)
+    {
+        for (int y = 0; y < blockCount.y; y++)
+        {
+            for (int x = 0; x < blockCount.x; x++)
+            {
+                int     count = 0;
+                Vector3 position = new Vector3(-blockCount.x * 0.5f + blockHalf.x + x,
+                                                blockCount.y * 0.5f - blockHalf.y - y, 0);
+
+                position.x = block.blockCount.x % 2 == 0 ? position.x + 0.5f : position.x;
+                position.y = block.blockCount.y % 2 == 0 ? position.y - 0.5f : position.y;
+
+                for (int i = 0; i < block.childBolcks.Length; i++)
+                {
+                    Vector3 blockPosition = block.childBolcks[i] + position;
+
+                    if (!IsBlockInsideMap(blockPosition))           break;
+                    if (!IsOtherBlockInThisBlock(blockPosition))    break;
+
+                    count++;
+                }
+
+                if (count == block.childBolcks.Length)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
